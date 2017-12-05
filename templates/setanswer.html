@@ -1,0 +1,62 @@
+<!--
+	Astral by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+
+<html>
+	<head>
+		<title>Книга вопросов и ответов | Ответ на вопрос</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+	</head>
+	<body>
+
+		<!-- Wrapper-->
+			<div id="wrapper">
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Question -->
+							<article class="panel">
+								<span id="ctgmenu" class='left'>
+									<ul>
+										{% for category in all_categories %}
+										<li><a href=?id={{ category['id'] }}#questions> {{ category['name']}} </a></li>
+										{% endfor %}
+									</ul>
+								</span>
+								<p style="text-align: justify;"><b>Вопрос:</b><br>
+								{{ one_question['content'] }}</p>
+								<p style="text-align: justify;"><b>Ответ:</b><br>
+								{% for answer in all_answers %}
+									{% if one_question['id'] == answer['question_id'] %}
+										{{ answer['content'] }}<br>
+									{% endif %}
+								{% endfor %}</p>
+							</article>
+					</div>
+
+				<!-- Footer -->
+					<div id="footer">
+						<ul class="copyright">
+							<li>&copy; Книга вопросов и ответов 2017</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+						</ul>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/skel-viewport.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="assets/js/main.js"></script>
+		<br>
+	</body>
+</html>

@@ -1,0 +1,202 @@
+<!--
+	Astral by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Книга вопросов и ответов</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+	</head>
+	<body>
+
+		<!-- Wrapper-->
+			<div id="wrapper">
+
+				<!-- Nav -->
+					<nav id="nav">
+						<a href="#home" class="icon fa-home active"><span>Главная</span></a>
+						<a href="#admins" class="icon fa-users"><span>Админы</span></a>
+						<a href="#categories" class="icon fa-list"><span>Темы</span></a>
+						<a href="#questions" class="icon fa-question"><span>Вопросы</span></a>
+						<a href="#answers" class="icon fa-comments"><span>Ответы</span></a>
+						<a href="/index.php" class="icon fa-sign-out"><span>Выход</span></a>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Home -->
+							<article id="home" class="panel">
+								<header>
+									<h1>Книга вопросов<br> и ответов</h1>
+								</header>
+								<a href="#admins" class="jumplink pic">
+									<span class="arrow icon fa-chevron-right"><span>Перейти к вопросам и ответам</span></span>
+									<img src="images/me.jpg" alt="" />
+								</a>
+								<p>Панель администрирования</p>
+							</article>
+
+						<!-- Admins -->
+							<article id="admins" class="panel">
+								<header>
+									<h2>Список администраторов</h2>
+								</header>
+								<table>
+								<tr>
+									<th>Логин</th>
+									<th>E-mail</th>
+									<th>Действия</th>
+								</tr>
+								{% for admin in all_admins %}
+								<tr> 
+									<td> {{ admin['login']}} </td>
+									<td> {{ admin['email']}} </td>
+									<td> <a href=?admin_id={{ admin['id'] }}&action=edit#admins>Изменить</a>&nbsp;<a href=edit_admin.php?admin_id={{ admin['id'] }}&action=delete#admins>Удалить</a></td>
+								</tr>
+								{% endfor %}
+								</table>
+								<p>Добавить нового администратора</p>
+								<form  method="post">
+									<div>
+										<div class="row">
+											<div class="6u 12u$(mobile)">
+												<input type="text" name="name" placeholder="{{ post_name }}" />
+											</div>
+											<div class="6u$ 12u$(mobile)">
+												<input type="email" name="email" placeholder="{{ post_email }}"/>
+											</div>
+											<div class="6u 12u$(mobile)">
+												<input type="password" name="password" placeholder="Password"/>
+											</div>
+											<div class="6u$ 12u$(mobile)">
+												<input type="submit" value="Зарегистрировать" />
+											</div>
+										</div>
+									</div>
+								</form>
+							</article>							
+						<!-- Categories -->
+							<article id="categories" class="panel">
+								<header>
+									<h2>Темы</h2>
+								</header>
+								<table>
+								<tr>
+									<th>Название темы</th>
+									<th>Всего вопросов</th>
+									<th>Из них опубликованно</th>
+									<th>Из них без ответа</th>
+									<th>Действия</th>
+								</tr>
+								{% for category in all_categories %}
+								<tr> 
+									<td><b>{{ category['name']}}</b></td>
+									<td>{{ category['id']|number_questions }}</td>
+									<td>{{ category['id']|number_show_questions }}</td>
+									<td>{{ category['id']|number_hide_questions }}</td>
+									<td> <a href=admin.php?category_id={{ category['id'] }}&action=delete#categories>Удалить</a></td>
+								{% endfor %}
+								</tr>
+								</table>
+								<p>Добавить тему</p>
+								<form  method="post">
+									<div>
+										<div class="row">
+											<div class="6u 12u$(mobile)">
+												<input type="text" name="set_category_name"/>
+											</div>
+											<div class="6u$ 12u$(mobile)">
+												<input type="submit" value="Добавить" />
+											</div>
+										</div>
+									</div>
+								</form>
+							</article>
+
+						<!-- Questions -->
+							<article id="questions" class="panel">
+								<header>
+									<h2>Вопросы/ответы</h2>
+								</header>
+								<span id="ctgmenu" class='left'>
+									<ul>
+										{% for category in all_categories %}
+										<li><a href=?id={{ category['id'] }}#questions> {{ category['name']}} </a></li>
+										{% endfor %}
+									</ul>
+								</span> 
+									<ul>
+										{% for question in all_questions %}
+											<li><a href=?question_id={{ question['id'] }}#answers> {{ question['content'] }} </a></li></li>
+										{% endfor %}
+									</ul>
+							</article>
+						
+						<!-- Answers -->
+							<article id="answers" class="panel">
+								<header>
+									<h2>Дайте ответ на выбранный вопрос:</h2>
+								</header>
+								<form  method="post">
+									<b>Вопрос:</b>
+									<textarea name="message">{{ one_question['content'] }}</textarea>
+									<b>Ответ:</b>
+									{% if all_answers is empty %}
+										<textarea name="set_answer" placeholder="Введите ответ"></textarea>
+									{% else %}
+										{% for answer in all_answers %}
+											{% if one_question['id'] == answer['question_id'] %}
+												<textarea name="set_answer">{{ answer['content'] }}</textarea>
+											{% endif %}										
+										{% endfor %}
+									{% endif %}
+									<input type='submit' value="Обновить" />
+								</form>
+								<br>
+								<br>
+								<header>
+									<h2>Дополните базу вопросом с ответом:</h2>
+								</header>
+								<form  method="post" >
+									<b>Тема:</b>
+									<select name="category_name">
+										<option selected="selected">Выберите тему</option>
+										{% for category in all_categories %}
+											<option> {{ category['name']}} </option>
+										{% endfor %}
+									</select>
+									<b>Вопрос:</b>
+									<textarea name="set_question" placeholder="Введите вопрос"></textarea>
+									<b>Ответ:</b>
+									<textarea name="set_answer" placeholder="Введите ответ"></textarea>
+									<input type='submit' value="Добавить" />
+								</form>
+							</article>
+					</div>
+
+				<!-- Footer -->
+					<div id="footer">
+						<ul class="copyright">
+							<li>&copy; Книга вопросов и ответов 2017</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+						</ul>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/skel-viewport.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="assets/js/main.js"></script>
+		<br>
+	</body>
+</html>
